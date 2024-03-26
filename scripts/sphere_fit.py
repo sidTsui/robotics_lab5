@@ -13,11 +13,10 @@ from robot_vision_lectures.msg import XYZarray, SphereParams
 
 matrix_a =[]
 matrix_b=[]
+P = np.array([])
 
 def build_matrices(data_points):
 	global matrix_a, matrix_b
-	matrix_a =[]
-	matrix_b=[]
 	# create matrices from Points array
 	for i in data_points.points:
 		matrix_a.append([2*point.x, 2*point.y, 2*point.z, 1])
@@ -25,14 +24,14 @@ def build_matrices(data_points):
 	return(nparray(matrix_a), np.array(matrix_b))
 	
 def fit(matrix_a, matrix_b):
+	global P
 	A = np.array(matrix_a)
 	B = np.array(matrix_b)
 	try:
 		ATA = np.matmul(A.T, A)
 		ATB = np.matmul(A.T, B)
 		P = np.matmul(np.linalg.inv(ATA), ATB)
-		return P
-	except np.linalg.LinAlgError:
+	except:
 		return None
 
 def params(P):
@@ -57,10 +56,10 @@ if __name__ == '__main__':
 	while not rospy.is_shutdown():
 		# check if matrices are not empty then run model_fitting
 		if len(matrix_a) > 0 and len(matrix_b) > 0:
-			P = fit(matrix_a, matrix_b)
+			fit(matrix_a, matrix_b)
 			# check if P is not empty then run calc_sparams
-			if P is not None:
-				sph_params = params(P)
+			if len(P) > 0:
+				params(P)
 				# publish sphere params
 				sp_pub.publish(sph_params)
 		rate.sleep()
