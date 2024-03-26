@@ -10,10 +10,13 @@ import numpy as np
 import math 
 from robot_vision_lectures.msg import XYZarray, SphereParams
 
+matrix_a =[]
+matrix_b=[]
 
 def build_matrices(data_points):
-	global matrix_a = []
- 	global matrix_b = []
+	global matrix_a, matrix_b
+	matrix_a =[]
+	matrix_b=[]
 	# create matrices from Points array
 	for i in data_points.points:
 		matrix_a.append([2*point.x, 2*point.y, 2*point.z, 1])
@@ -28,16 +31,16 @@ def fit(matrix_a, matrix_b):
 		ATB = np.matmul(A.T, B)
 		P = np.matmul(np.linalg.inv(ATA), ATB)
 		return P
-	except np linalg.LinAlgError:
+	except np.linalg.LinAlgError:
 		return None
 
 def params(P):
 	sph_params.xc = P[0]
 	sph_params.yc = P[1]
 	sph_params.zc = P[2]
-
+	
 	radius = math.sqrt(P[3] + P[0]**2 + P[1]**2 + P[2]**2)
-    	sph_params.radius = radius
+	sph_params.radius = radius
 	return sph_params
 	
 if __name__ == '__main__':
