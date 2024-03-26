@@ -7,32 +7,20 @@
 #!/usr/bin/env python3
 import rospy
 import numpy as np
-import cv2
 from robot_vision_lectures.msg import XYZarray
 from robot_vision_lectures.msg import SphereParams
 
-#defining matrix A
-A = np.vstack([x, np.ones(len(x))]).T
-#defining matrix B
-B = np.array([y]).T
-#product of A^T*A
-ATA = np.matmul(A.T, A)
-#product of A^T*B
-ATB = np.matmul(A.T, B)
-product = np.matmul(np.linalg.inv(ATA),ATB)
-m1 = product[0]
-c1 = product[1]
-
 
 def build_matrices(data_points):
-	matrix_a
- 	matrix_b
+	global matrix_a = []
+ 	global matrix_b = []
 	# create matrices from Points array
 	for i in data_points.points:
 		matrix_a.append([2*point.x, 2*point.y, 2*point.z, 1])
 		matrix_b.append([point.x**2 + point.y**2 + point.z**2])
-		
-def calc_abp(matrix_a, matrix_b):
+	return(nparray(matrix_a), np.array(matrix_b))
+	
+def fit(matrix_a, matrix_b):
 	A = np.array(matrix_a)
 	B = np.array(matrix_b)
 	try:
@@ -41,32 +29,36 @@ def calc_abp(matrix_a, matrix_b):
 		P = np.matmul(np.linalg.inv(ATA), ATB)
 		return P
 	except:
-		return null
+		return None
 
-def Sphere_Params(P, S):
+def sphere_params(P):
+	sph_params.xc = P[0]
+	sph_params.yc = P[1]
+	sph_params.zc = P[2]
+
+	radius = math.sqrt(P[3] + P[0]**2 + P[1]**2 + P[2]**2)
+    	sph_params.radius = radius
 	
 if __name__ == '__main__':
 	
 	# define the node and subcribers and publishers
 	rospy.init_node('sphere_fit', anonymous = True)
 	# define a subscriber to ream images
-	img_sub = rospy.Subscriber("/xyz_cropped", XYZarray, get_image) 
+	img_sub = rospy.Subscriber("/xyz_cropped", XYZarray, build_matrices) 
 	# define a publisher to publish images
-	img_pub = rospy.Publisher('/sphere_params', S, queue_size = 10)
-	S = SphereParams()
+	img_pub = rospy.Publisher('/sphere_params', SphereParams, queue_size = 10)
 	# set the loop frequency
 	rate = rospy.Rate(10)
 
 	while not rospy.is_shutdown():
-		# make sure we process if the camera has started streaming images
-		if img_received:
-			# flip the image up			
-			flipped_img = cv2.flip(rgb_img, 0)
-			# convert it to ros msg and publish it
-			img_msg = CvBridge().cv2_to_imgmsg(flipped_img, encoding="rgb8")
-			# publish the image
-			img_pub.publish(img_msg)
-		# pause until the next iteration			
+		# check if matrices are not empty then run model_fitting
+		if len(matrix_a) > 0 and len(matrix_b) > 0:
+			model_fitting(matrix_a, matrix_b)
+			# check if P is not empty then run calc_sparams
+			if len(P) > 0:
+				sphere_params(P)
+				# publish sphere params
+				sp_pub.publish(sph_params)
 		rate.sleep()
 
 
