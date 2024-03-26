@@ -38,6 +38,7 @@ def params(P):
 
 	radius = math.sqrt(P[3] + P[0]**2 + P[1]**2 + P[2]**2)
     	sph_params.radius = radius
+	return sph_params
 	
 if __name__ == '__main__':
 	# define the node and subcribers and publishers
@@ -45,7 +46,7 @@ if __name__ == '__main__':
 	# define a subscriber to ream images
 	img_sub = rospy.Subscriber("/xyz_cropped", XYZarray, build_matrices) 
 	# define a publisher to publish images
-	img_pub = rospy.Publisher('/sphere_params', SphereParams, queue_size = 10)
+	sp_pub = rospy.Publisher('/sphere_params', SphereParams, queue_size = 10)
 	# set the loop frequency
 	rate = rospy.Rate(10)
 
