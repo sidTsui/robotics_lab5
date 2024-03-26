@@ -2,14 +2,14 @@
 ###lab 5
 ### 3/19/2024
 
-###flipped image outline 
+### used flipped image outline 
 
 #!/usr/bin/env python3
 import rospy
 import numpy as np
 import cv2
-from cv_bridge import CvBridge
-from sensor_msgs.msg import Image
+from robot_vision_lectures.msg import XYZarray
+from robot_vision_lectures.msg import SphereParams
 
 #defining matrix A
 A = np.vstack([x, np.ones(len(x))]).T
@@ -24,29 +24,36 @@ m1 = product[0]
 c1 = product[1]
 
 
-img_received = False
-# define a 720x1280 3-channel image with all pixels equal to zero
-rgb_img = np.zeros((720, 1280, 3), dtype = "uint8")
+def build_matrices(data_points):
+	matrix_a
+ 	matrix_b
+	# create matrices from Points array
+	for i in data_points.points:
+		matrix_a.append([2*point.x, 2*point.y, 2*point.z, 1])
+		matrix_b.append([point.x**2 + point.y**2 + point.z**2])
+		
+def calc_abp(matrix_a, matrix_b):
+	A = np.array(matrix_a)
+	B = np.array(matrix_b)
+	try:
+		ATA = np.matmul(A.T, A)
+		ATB = np.matmul(A.T, B)
+		P = np.matmul(np.linalg.inv(ATA), ATB)
+		return P
+	except:
+		return null
 
-
-# get the image message
-def get_image(ros_img):
-	global rgb_img
-	global img_received
-	# convert to opencv image
-	rgb_img = CvBridge().imgmsg_to_cv2(ros_img, "rgb8")
-	# raise flag
-	img_received = True
-
+def Sphere_Params(P, S):
 	
 if __name__ == '__main__':
+	
 	# define the node and subcribers and publishers
 	rospy.init_node('sphere_fit', anonymous = True)
 	# define a subscriber to ream images
-	img_sub = rospy.Subscriber("/camera/color/image_raw", Image, get_image) 
+	img_sub = rospy.Subscriber("/xyz_cropped", XYZarray, get_image) 
 	# define a publisher to publish images
-	img_pub = rospy.Publisher('/sphere_params', Image, queue_size = 1)
-	
+	img_pub = rospy.Publisher('/sphere_params', S, queue_size = 10)
+	S = SphereParams()
 	# set the loop frequency
 	rate = rospy.Rate(10)
 
