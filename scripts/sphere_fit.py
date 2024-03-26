@@ -3,6 +3,7 @@
 ### 3/19/2024
 
 ### used flipped image outline 
+#used in class lectures, and online sources
 
 #!/usr/bin/env python3
 import rospy
@@ -56,7 +57,7 @@ if __name__ == '__main__':
 	while not rospy.is_shutdown():
 		# check if matrices are not empty then run model_fitting
 		if len(matrix_a) > 0 and len(matrix_b) > 0:
-			P = model_fitting(matrix_a, matrix_b)
+			P = fit(matrix_a, matrix_b)
 			# check if P is not empty then run calc_sparams
 			if P is not None:
 				sph_params = params(P)
