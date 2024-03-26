@@ -7,8 +7,8 @@
 #!/usr/bin/env python3
 import rospy
 import numpy as np
-from robot_vision_lectures.msg import XYZarray
-from robot_vision_lectures.msg import SphereParams
+import math 
+from robot_vision_lectures.msg import XYZarray, SphereParams
 
 
 def build_matrices(data_points):
@@ -28,10 +28,10 @@ def fit(matrix_a, matrix_b):
 		ATB = np.matmul(A.T, B)
 		P = np.matmul(np.linalg.inv(ATA), ATB)
 		return P
-	except:
+	except np linalg.LinAlgError:
 		return None
 
-def sphere_params(P):
+def params(P):
 	sph_params.xc = P[0]
 	sph_params.yc = P[1]
 	sph_params.zc = P[2]
@@ -40,7 +40,6 @@ def sphere_params(P):
     	sph_params.radius = radius
 	
 if __name__ == '__main__':
-	
 	# define the node and subcribers and publishers
 	rospy.init_node('sphere_fit', anonymous = True)
 	# define a subscriber to ream images
@@ -53,10 +52,10 @@ if __name__ == '__main__':
 	while not rospy.is_shutdown():
 		# check if matrices are not empty then run model_fitting
 		if len(matrix_a) > 0 and len(matrix_b) > 0:
-			model_fitting(matrix_a, matrix_b)
+			P = model_fitting(matrix_a, matrix_b)
 			# check if P is not empty then run calc_sparams
-			if len(P) > 0:
-				sphere_params(P)
+			if P is not None:
+				sph_params = params(P)
 				# publish sphere params
 				sp_pub.publish(sph_params)
 		rate.sleep()
