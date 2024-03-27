@@ -18,14 +18,15 @@ P = np.array([])
 
 # builds matrices from receiving the data points
 def build_matrices(data_points):
-	matrix_a, matrix_b
+	global matrix_a, matrix_b
+	matrix_a = []
+	matrix_b = []
 	# create matrices from Points array
 	for i in data_points.points:
 		#[2*x, 2*y, 2*z, 1]
 		matrix_a.append([2*point.x, 2*point.y, 2*point.z, 1])
 		#[x^2 + y^2 + z^2]
 		matrix_b.append([point.x**2 + point.y**2 + point.z**2])
-	return(np.array(matrix_a), np.array(matrix_b))
 # fits the sphere model to data points and finds P
 def fit(matrix_a, matrix_b):
 	global P
@@ -35,7 +36,7 @@ def fit(matrix_a, matrix_b):
 		ATA = np.matmul(A.T, A)
 		ATB = np.matmul(A.T, B)
 		P = np.matmul(np.linalg.inv(ATA), ATB)
-	except:
+	except np linalg.LinAlgError:
 		pass
 #calc sphere params from fit function finding  P 
 def params(P):
@@ -69,7 +70,6 @@ if __name__ == '__main__':
 			# check if P is not empty then run calc_sparams
 			if len(P) > 0:
 				sph_params = params(P)
-				
 				# publish sphere params
 				sp_pub.publish(sph_params)
 		rate.sleep()
