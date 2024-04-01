@@ -1,9 +1,13 @@
 ###Sidney Tsui
-###lab 5
-### 3/19/2024
+###lab 6
+### 4/2/2024
 
-### used flipped image outline 
+### used lab 5 as outline
 #used in class lectures, and online sources
+
+#filter estimated values of x_c, y_c, z_c, radius b4 publishing
+#use method explained in class to implement low-pass filter to each parameter.
+#find proper filter gains and fine tune them
 
 #!/usr/bin/env python3
 import rospy
@@ -14,7 +18,7 @@ from robot_vision_lectures.msg import XYZarray, SphereParams
 ##init global variables
 matrix_a =[]
 matrix_b=[]
-P = np.array([])
+
 
 # builds matrices from receiving the data points
 def build_matrices(data_points):
@@ -73,5 +77,3 @@ if __name__ == '__main__':
 				# publish sphere params
 				sp_pub.publish(sph_params)
 		rate.sleep()
-
-
