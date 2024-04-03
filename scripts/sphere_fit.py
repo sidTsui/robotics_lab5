@@ -1,5 +1,5 @@
 ###Sidney Tsui
-###lab 6
+###lab 5
 ### 4/2/2024
 
 ### used lab 5 as outline
@@ -28,9 +28,9 @@ def build_matrices(data_points):
 	# create matrices from Points array
 	for i in data_points.points:
 		#[2*x, 2*y, 2*z, 1]
-		matrix_a.append([2*point.x, 2*point.y, 2*point.z, 1])
+		matrix_a.append([2 * i.x, 2 * i.y, 2 * i.z, 1])
 		#[x^2 + y^2 + z^2]
-		matrix_b.append([point.x**2 + point.y**2 + point.z**2])
+		matrix_b.append([i.x ** 2 + i.y ** 2 + i.z ** cc2])
 # fits the sphere model to data points and finds P
 def fit(matrix_a, matrix_b):
 	global P
@@ -40,7 +40,7 @@ def fit(matrix_a, matrix_b):
 		ATA = np.matmul(A.T, A)
 		ATB = np.matmul(A.T, B)
 		P = np.matmul(np.linalg.inv(ATA), ATB)
-	except np linalg.LinAlgError:
+	except:
 		pass
 #calc sphere params from fit function finding  P 
 def params(P):
@@ -60,7 +60,7 @@ if __name__ == '__main__':
 	rospy.init_node('sphere_fit', anonymous = True)
 	# define a subscriber to ream images
 	# subscribe to /xyz_cropped topic
-	img_sub = rospy.Subscriber("/xyz_cropped", XYZarray, build_matrices) 
+	img_sub = rospy.Subscriber("/xyz_cropped_ball", XYZarray, build_matrices) 
 	#create publisher sphereParameters on the /sphere_params topic
 	# define a publisher to publish images
 	sp_pub = rospy.Publisher('/sphere_params', SphereParams, queue_size = 10)
