@@ -30,7 +30,7 @@ def build_matrices(data_points):
 		#[2*x, 2*y, 2*z, 1]
 		matrix_a.append([2 * i.x, 2 * i.y, 2 * i.z, 1])
 		#[x^2 + y^2 + z^2]
-		matrix_b.append([i.x ** 2 + i.y ** 2 + i.z ** cc2])
+		matrix_b.append([i.x ** 2 + i.y ** 2 + i.z ** 2])
 # fits the sphere model to data points and finds P
 def fit(matrix_a, matrix_b):
 	global P
